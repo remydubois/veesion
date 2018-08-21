@@ -20,10 +20,10 @@ else:
     LOCAL = '/mnt/data40T_v2/rdubois/data/veesion/'
 
 parser = argparse.ArgumentParser(
-    description='Train squuezenet for video gesture classification')
+    description='Train model for video gesture classification')
 parser.add_argument('--epochs',
                     type=int,
-                    default=10,
+                    default=100,
                     help='Number of epochs for which to train.'
                     )
 parser.add_argument('--gpu',
@@ -32,12 +32,12 @@ parser.add_argument('--gpu',
                     )
 parser.add_argument('--batchsize',
                     type=int,
-                    default=10,
+                    default=32,
                     help='batch size.'
                     )
 parser.add_argument('--length',
                     type=int,
-                    default=10,
+                    default=40,
                     help='video length.'
                     )
 parser.add_argument('--bypass',
@@ -98,16 +98,20 @@ def main(args_):
                   metrics=['acc'])
 
     # Train
-    model.fit_generator(
+    history = model.fit_generator(
         train_generator,
         class_weight=class_weights,
         steps_per_epoch=y_train.shape[0] // args.batchsize,
         validation_data=test_generator,
         validation_steps=y_test.shape[0] // args.batchsize,
         epochs=args.epochs,
+        workers=1,
         callbacks=[tb, ck],
         max_queue_size=5
     )
+
+    with open(TARGET + 'veesion/' + args.model + '/hist', 'wb') as file_pi:
+        pickle.dump(history.history, file_pi)
 
 if __name__ == '__main__':
     args = parser.parse_args()

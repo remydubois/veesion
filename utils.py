@@ -42,7 +42,7 @@ def video_generator(videos, length, width=150):
             # if not os.path.exists(path)
             sequence = numpy.stack([imread(video[i]) for i in indices], axis=2)
         else:
-            sequence = numpy.load(video)
+            sequence = numpy.load(video, mmap_mode='r')
 
             L = sequence.shape[2]
 

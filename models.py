@@ -4,6 +4,7 @@ from keras.models import Model
 import numpy
 from keras import objectives
 import tensorflow as tf
+from keras.callbacks import ModelCheckpoint
 from keras.backend import squeeze
 from keras.applications.inception_v3 import InceptionV3
 
@@ -65,7 +66,6 @@ def SqueezeNetOutput3D(input_, num_classes=4, bypass=None):
     input_conv_10_ = fm_9
     if bypass == 'simple':
         input_conv_10_ = Add()([mxp_2, fm_9])
-    # embedding = GlobalAveragePooling2D(name='embedding_layer')(input_conv_10_)
     dropped = Dropout(0.5, name='Dropout')(input_conv_10_)
     conv_10 = Conv3D(num_classes, (1, 1, 1), padding='valid', name='conv10', activation='relu')(dropped)
     normalized = BatchNormalization(name='batch_normalization')(conv_10)
